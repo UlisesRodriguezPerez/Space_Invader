@@ -4,10 +4,11 @@ import random
 import pygame
 from pygame import mixer
 
-
+    #Clase Game( principal).
 class Game:
     screen = None
     
+    #   Inicialización del juego.
     def __init__(self, width, height):
         # Intialize the pygame
         pygame.init()
@@ -121,20 +122,24 @@ class Game:
 
         pygame.quit()
         
-    # Player
+    # Clase Player
 class Player: 
+    #   Constructor de la clase.
     def __init__(self):
         self.playerImg = pygame.image.load('player.png')
         self.playerX = 370
         self.playerY = 480
         self.playerX_change = 0
 
+    #   Función para actualizar el player.
     def player(self,game,x, y):
         game.screen.blit(self.playerImg, (x, y))
-    
+
+    #   Clase Bullet.
 class Bullet: # Bullet
     # Ready - You can't see the bullet on the screen
     # Fire - The bullet is currently moving
+    #   Constructor de la clase.
     def __init__(self):
         self.bulletImg = pygame.image.load('bullet.png')
         self.bulletX = 0
@@ -143,11 +148,12 @@ class Bullet: # Bullet
         self.bulletY_change = 10
         self.bullet_state = "ready"
     
+    #   Cambia el estado a disparar.
     def fire_bullet(self,game,x, y):
-
         self.bullet_state = "fire"
         game.screen.blit(self.bulletImg, (x + 16, y + 10)) 
-
+        
+    #   Función booleana para saber si la bala colicionó.
     def isCollision(self,enemyX,enemyY,bulletX,bulletY):
         distance = math.sqrt(math.pow(enemyX - bulletX, 2) + (math.pow(enemyY - bulletY, 2)))
         if distance < 27:
@@ -155,46 +161,54 @@ class Bullet: # Bullet
         else:
             return False
 
-    #Enemy
+    #Clase Enemy.
 class Enemy: 
+    #   Atributos de la clase.
     enemyImg = []
     enemyX = []
     enemyY = []
     enemyX_change = []
     enemyY_change = []
     num_of_enemies = 6
-    
+
+    #   Constructor de la clase.
     def __init__(self):
+        #   Recorre la cantidad de enemigos para crearlos.
         for i in range(Enemy.num_of_enemies):
             self.enemyImg.append(pygame.image.load('enemy.png'))
             self.enemyX.append(random.randint(0, 736))
             self.enemyY.append(random.randint(50, 150))
             self.enemyX_change.append(4)
             self.enemyY_change.append(40)
-       
+
+    #   Función para ir mostrando cada enemigo.
     def enemy(self,game,x, y, i):
         game.screen.blit(self.enemyImg[i], (x, y))    
         
-    # Score 
+    # Clase Score 
 class Score:
+    #   Constructor de la clase.
     def __init__(self):
         self.score_value = 0
         self.textX = 10
         self.testY = 10
         self.font = pygame.font.Font('freesansbold.ttf', 32)
     
+    #   Función para actualizar la puntuación en pantalla.
     def show_score(self,game,x, y):
         score = self.font.render("Score : " + str(self.score_value), True, (255, 255, 255))
         game.screen.blit(score, (x, y))
         
-    # Game Over
+    #   Clase Game Over.
 class GameOver: 
+    #   Constructor de la clase.
     def __init__(self):
         self.over_font = pygame.font.Font('freesansbold.ttf', 64)
-        
+
+    #Función para mostrar "GAE OVER" en pantalla.
     def game_over_text(self,game):
         over_text = self.over_font.render("GAME OVER", True, (255, 255, 255))
         game.screen.blit(over_text, (200, 250))
-
+#   main del programa.
 if __name__ == '__main__':
     game = Game(800, 600)
