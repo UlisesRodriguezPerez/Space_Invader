@@ -45,7 +45,9 @@ class Game:
             #   Actualizar Puntuación.
             self.score.show_score(self,self.score.textX, self.score.testY)
             #   Actualiza las vidas de la pantalla.
-            self.player.show_lifes(self,self.player.textX,self.player.textY)
+            self.lifes.show_lifes(self,self.lifes.textX,self.lifes.textY)
+            #   Actualiza el nivel de la pantalla.
+            self.level_of_game.shoe_level(self,self.level_of_game.textX,self.level_of_game.textY)
             #  Actualiza todo el mostrado.
             pygame.display.update()
 
@@ -69,6 +71,8 @@ class Game:
         self.bullet = Bullet()
         self.score = Score()
         self.game_over = GameOver()
+        self.level_of_game = Level()
+        self.lifes = Life()
 
     #   Función para ver qué accion debe hacer el programa según la tecla presionada.
     def event_type(self):
@@ -106,8 +110,8 @@ class Game:
         for i in range(self.enemy.num_of_enemies):
             # Game Over
             if self.enemy.enemyY[i] > 440:
-                if self.player.lifes != 1:
-                    self.player.lifes = self.player.lifes - 1
+                if self.lifes.lifes_of_level != 1:
+                    self.lifes.lifes_of_level = self.lifes.lifes_of_level - 1
                     self.enemy.enemyY[i] = 50 
                     
                 else:
@@ -154,18 +158,17 @@ class Game:
         if self.enemy.num_of_enemies == 0:
             #   pasa al siguiente nivel.
             self.siguiente_nivel()
-        # self.enemy.enemyX[i] = random.randint(0, 736)
-        # self.enemy.enemyY[i] = random.randint(50, 150)
-        # return self.enemy.enemyX[i],self.enemy.enemyY[i]
+            self.level_of_game.level += 1
 
     #   Función encargada de aumentar los enemigos cuando se acaben.
     def siguiente_nivel(self):
         
         #   Carga nuevamente los enemigos.
         self.enemy.num_of_enemies_leves = self.enemy.num_of_enemies_leves + 1
+        self.enemy.num_of_enemies = self.enemy.num_of_enemies_leves
         for i in range(self.enemy.num_of_enemies_leves):
             self.enemy.generar_enemy()
-            self.enemy.enemy(self,self.enemy.enemyX[i], self.enemy.enemyY[i], i)
+            # self.enemy.enemy(self,self.enemy.enemyX[i], self.enemy.enemyY[i], i)
         
         
         return self.enemy_Movement()
@@ -187,19 +190,10 @@ class Player:
         self.playerX = 370
         self.playerY = 480
         self.playerX_change = 0
-        self.lifes = 3
-        self.textX = 200
-        self.textY = 10
-        self.font = pygame.font.Font('freesansbold.ttf', 32)
 
     #   Función para actualizar el player.
     def set_player(self,game,x, y):
         game.screen.blit(self.playerImg, (x, y))
-
-    #   Función para actualizar las vidas en la pantalla.
-    def show_lifes(self,game,x, y):
-        lifes = self.font.render("Lifes : " + str(self.lifes), True, (255, 255, 255))
-        game.screen.blit(lifes, (x, y))
 
     #   Clase Bullet.
 class Bullet: # Bullet
@@ -227,6 +221,7 @@ class Bullet: # Bullet
         else:
             return False
 
+
     #Clase Enemy.
 class Enemy: 
     #   Atributos de la clase.
@@ -253,6 +248,34 @@ class Enemy:
     def enemy(self,game,x, y, i):       #REVISAR cambiar nombre a la función.
         game.screen.blit(self.enemyImg[i], (x, y))    
         
+    #   Clase vidas.
+class Life:
+    #   Constructor de la clase.
+    def __init__(self):
+        self.lifes_of_level = 3
+        self.textX = 200
+        self.textY = 10
+        self.font = pygame.font.Font('freesansbold.ttf', 32)
+    
+    #   Función para actualizar las vidas en la pantalla.
+    def show_lifes(self,game,x, y):
+        lifes = self.font.render("Lifes : " + str(self.lifes_of_level), True, (255, 255, 255))
+        game.screen.blit(lifes, (x, y))
+
+    #   Clase que contiene las caracterísiticas acerca de los niveles.
+class Level:
+    #    Constructor de la clase.
+    def __init__(self):
+        self.level = 1
+        self.textX = 400
+        self.textY = 10
+        self.font = pygame.font.Font('freesansbold.ttf', 32)
+
+    #   Función para actualizar el nivel en pantalla.
+    def shoe_level(self,game,x, y):
+        levels = self.font.render("Level : " + str(self.level), True, (255, 255, 255))
+        game.screen.blit(levels, (x, y))
+
     # Clase Score 
 class Score:
     #   Constructor de la clase.
