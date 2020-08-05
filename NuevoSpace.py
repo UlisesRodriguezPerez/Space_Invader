@@ -147,18 +147,40 @@ class Game:
 
     #   Función para cambios cuando colisiona. 
     def colision(self,i):
+        suma = 0
         explosionSound = mixer.Sound("explosion.wav")
         explosionSound.play()
         self.bullet.bulletY = 480
         self.bullet.bullet_state = "ready"
-        self.score.score_value += 1
-        self.enemy.enemyX.pop(i)
-        self.enemy.enemyY.pop(i)
-        self.enemy.num_of_enemies = self.enemy.num_of_enemies - 1
+        suma = self.clasificar_enemy(i)
+        self.score.score_value += suma
+        #   Función que se encarga de destruir el enemigo y crear la explosión.
+        self.destruir_enemigo(i)
+        puntaje = self.score.score_value
+        if puntaje % 10 == 0:           #   Obtiene una vida cada que sume 10 puntos.
+            self.lifes.lifes_of_level += 1
         if self.enemy.num_of_enemies == 0:
             #   pasa al siguiente nivel.
             self.siguiente_nivel()
             self.level_of_game.level += 1
+    def clasificar_enemy(self,i):
+        #REVISAR pendiente ver cómo commparar imagenes.
+        if self.enemy.enemyImg[i] == pygame.image.load('enemy0.png'):
+            return 1
+        elif self.enemy.enemyImg[i] == pygame.image.load('enemy1.png'):
+            return 2
+        else:
+            return 1
+
+    def destruir_enemigo(self,i):
+        self.enemy.enemyImg[i] = pygame.image.load('explosion.png')
+        self.enemy.enemy(self,self.enemy.enemyX[i], self.enemy.enemyY[i], i)
+        self.enemy.enemyX.pop(i)
+        self.enemy.enemyY.pop(i)
+        self.enemy.enemyX_change.pop(i)
+        self.enemy.enemyY_change.pop(i)
+        self.enemy.enemyImg.pop(i)
+        self.enemy.num_of_enemies = self.enemy.num_of_enemies - 1
 
     #   Función encargada de aumentar los enemigos cuando se acaben.
     def siguiente_nivel(self):
@@ -207,11 +229,16 @@ class Bullet: # Bullet
         self.bulletX_change = 0
         self.bulletY_change = 10
         self.bullet_state = "ready"
+        self.bullet_range = 16
     
     #   Cambia el estado a disparar.
     def fire_bullet(self,game,x, y):
         self.bullet_state = "fire"
-        game.screen.blit(self.bulletImg, (x + 16, y + 10)) 
+        game.screen.blit(self.bulletImg, (x + self.bullet_range, y + 10)) 
+
+        #game.screen.blit(self.bulletImg, (x - self.bullet_range, y + 10)) 
+        # game.screen.blit(self.bulletImg, (x + self.bullet_range, y + 10)) 
+        # game.screen.blit(self.bulletImg, (x + self.bullet_range, y + 10)) 
 
     #   Función booleana para saber si la bala colicionó.
     def isCollision(self,enemyX,enemyY,bulletX,bulletY):
@@ -239,7 +266,8 @@ class Enemy:
         for i in range(Enemy.num_of_enemies):
             self.generar_enemy()
     def generar_enemy(self):
-        self.enemyImg.append(pygame.image.load('enemy.png'))
+        enemy_random = random.randint(0, 2)
+        self.enemyImg.append(pygame.image.load('enemy'+ str(enemy_random)+'.png'))
         self.enemyX.append(random.randint(0, 736))
         self.enemyY.append(random.randint(50, 150))
         self.enemyX_change.append(4)
