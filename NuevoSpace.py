@@ -11,6 +11,7 @@ LIFES = 2                               #   Vidas al inicio del juego.
 PUNTOS_IMG_ENEMY_0 = 1                  #   Puntos por desruir enemigo de la imagen enemy0.png.
 PUNTOS_IMG_ENEMY_1 = 2                  #   Puntos por destruir enemigo de la imagen enemy1.png.
 PUNTOS_IMG_ENEMY_2 = 3                  #   Puntos por destruir enemigo de la imagen enemy2.png.
+VELOCIDAD_ENEMIGOS = 0.2
 
     #Clase Game( principal).
 class Game:
@@ -136,7 +137,7 @@ class Game:
             self.enemy.enemyX[i] #+= self.enemy.enemyX_change[i]
             #   Enemy movement
             #self.enemy_direction(i)
-            self.enemy.enemyY[i] += 0.2
+            self.enemy.enemyY[i] += VELOCIDAD_ENEMIGOS
             # Collision
             collision = self.bullet.isCollision(self.enemy.enemyX[i], self.enemy.enemyY[i], self.bullet.bulletX, self.bullet.bulletY)
             if collision:
